@@ -1,4 +1,45 @@
-// Terminal Portfolio - Professional Edition
+/**
+ * ===========================================================================
+ * TERMINAL PORTFOLIO - PROFESSIONAL EDITION v3.0.0
+ * ===========================================================================
+ * 
+ * @description An interactive terminal-style portfolio website that simulates
+ *              a command-line interface for displaying professional information.
+ *              Built with vanilla JavaScript for maximum compatibility and
+ *              zero dependencies.
+ * 
+ * @author      Jerdon Philip Macaraeg
+ * @license     MIT - Free to use, modify, and distribute
+ * @version     3.0.0
+ * @since       2023
+ * @updated     2026-05-16
+ * 
+ * ===========================================================================
+ * CUSTOMIZATION GUIDE
+ * ===========================================================================
+ * 
+ * QUICK START - For New Users:
+ * 1. Replace all personal info in the USER_DATA section below
+ * 2. Update the project list with your own projects
+ * 3. Change color scheme in CSS variables (style section)
+ * 4. Add/remove commands as needed
+ * 
+ * FILE STRUCTURE NEEDED:
+ * ├── index.html (terminal interface)
+ * ├── styles.css (terminal styling)
+ * ├── terminal.js (this file)
+ * └── assets/
+ *     ├── files/
+ *     │   └── YOUR-RESUME.pdf
+ *     └── images/ (if needed)
+ * 
+ * ===========================================================================
+ */
+
+// ===========================================================================
+// DOM ELEMENT REFERENCES
+// ===========================================================================
+// TIP: If you change element IDs in HTML, update them here
 const terminalOutput = document.getElementById('terminalOutput');
 const terminalInput = document.getElementById('terminalInput');
 const cursor = document.getElementById('cursor');
@@ -9,14 +50,197 @@ const quickCommandsClose = document.getElementById('quickCommandsClose');
 const overlay = document.getElementById('overlay');
 const swipeHint = document.getElementById('swipeHint');
 
+// State management
 let commandHistory = [];
 let historyIndex = -1;
 let isMobile = window.innerWidth <= 768;
 
 // ===========================================================================
-// COMMAND FUNCTIONS
+// USER DATA - CUSTOMIZE THIS SECTION
 // ===========================================================================
+// TIP: Replace all values with your own information
+// TIP: Keep the HTML span tags for styling, just change the text content
 
+const USER_DATA = {
+    // Personal Information
+    name: 'Jerdon Philip Macaraeg',
+    title: 'Full-Stack Developer | QA Specialist | Entrepreneur',
+    location: '#81 Tambac, Malasiqui, Pangasinan',
+    phone: '09168745394',
+    email: 'jerdonphilipmacaraeg@gmail.com',
+    shortBio: 'Experienced Full-Stack Engineer, QA professional...',
+
+    // Professional Status
+    available: true, // Set to false if not looking for work
+    responseTime: '24 hours',
+
+    // Social Links
+    social: {
+        facebook: 'https://www.facebook.com/Philip.Je.Mac',
+        instagram: 'https://www.instagram.com/simple_jerdzz',
+        github: 'https://github.com/JerdonPhilip',
+        linkedin: '' // Add your LinkedIn if you have one
+    },
+
+    // Resume
+    resumeFile: 'assets/files/YOUR-RESUME.pdf', // CHANGE THIS to your resume path
+
+    // Terminal Info
+    terminalVersion: '3.0.0',
+    buildDate: '2026.05.16',
+    kernel: 'JavaScript ES2024',
+    shell: 'bash 5.2',
+
+    // Project List - Add, remove, or modify projects here
+    projects: [
+        {
+            id: 1,
+            name: 'Cross-Company Inventory Tracking System',
+            type: 'Desktop Application',
+            technologies: ['Electron', 'Tailwind CSS', 'PostgreSQL'],
+            testing: 'Playwright E2E Automation',
+            role: 'Lead Software Engineer (Sole Developer)',
+            status: 'development', // Options: 'development', 'deployed', 'active'
+            description: 'Unified logistics system connecting Sakura Steel Development Corp and GT Sakura Trading Surplus Mall.',
+            link: null, // Set to URL string if public, null if private
+            isProprietary: true
+        },
+        {
+            id: 2,
+            name: 'Wedding Landing Page',
+            type: 'Single-Page Application',
+            technologies: ['HTML', 'CSS', 'Tailwind CSS', 'JavaScript'],
+            status: 'deployed',
+            description: 'Wedding Event Hub — Garden-themed digital invitation and guest management platform with interactive photo gallery and maps.',
+            link: 'https://lumen-lens-ph.github.io/christopher-jhohanna-wedding/',
+            isProprietary: false
+        },
+        {
+            id: 3,
+            name: 'Task Management App',
+            type: 'Productivity Application',
+            technologies: ['HTML', 'CSS', 'JavaScript', 'Vue', 'Tailwind CSS'],
+            status: 'development',
+            description: 'Organize tasks, set deadlines, and track progress with an intuitive interface.',
+            link: 'docs/assets/html/maintenance/maintenance.html',
+            isProprietary: false
+        },
+        {
+            id: 4,
+            name: 'Lumen Lens Studios',
+            type: 'Photography Business',
+            role: 'Founder & Lead Photographer',
+            status: 'active',
+            description: 'Professional photography services for weddings, portraits, and events.',
+            link: null,
+            isProprietary: false
+        }
+    ],
+
+    // Skills - Organized by category
+    skills: {
+        frontend: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'AngularJS', 'Tailwind CSS', 'Bootstrap', 'Responsive & Mobile-First Design'],
+        backend: ['Node.js', 'Express.js', 'PHP', 'Python', 'Java', 'Electron (Desktop Apps)', 'RESTful API Development', 'npm', 'Sequelize ORM'],
+        databases: ['MySQL', 'PostgreSQL', 'SQLite'],
+        qa: ['Manual Testing', 'Playwright (E2E Automation)', 'Postman (API Testing)', 'Browser DevTools Auditing', 'Google Lighthouse Audits'],
+        design: ['Wireframing & Mockups', 'User Flows & Process Flows', 'Adobe Photoshop', 'Adobe Lightroom', 'Photography'],
+        devops: ['Git & GitHub', 'CI/CD Pipelines', 'Azure DevOps'],
+        operations: ['Project Management', 'Business Operations', 'Professional Communication'],
+        languages: ['English', 'Tagalog']
+    },
+
+    // Work Experience
+    experience: [
+        {
+            title: 'Lead Software Engineer (Freelance)',
+            company: 'Sakura Steel Development Corp & GT Sakura Trading Surplus Mall',
+            period: 'January 2026 - Present',
+            highlights: [
+                'Directing full-stack development of a cross-company Inventory Tracking System...',
+                'Architecting a scalable desktop application utilizing Electron and modern JavaScript.',
+                'Designing front-end UX with Tailwind CSS for a clean, utility-driven, consistent interface.',
+                'Full project lifecycle ownership as the sole developer.',
+                'Integrating Playwright for automated E2E testing and QA.'
+            ]
+        },
+        {
+            title: 'Business Manager / Operations Lead',
+            company: "Donato's Space Rental",
+            period: 'February 2026 - Present',
+            highlights: [
+                'Oversee daily operations and tenant relations for a local rental property business.',
+                'Manage end-to-end leasing workflows, contracts, payment tracking, and maintenance scheduling.'
+            ]
+        },
+        // Add more experience entries following the same structure
+    ],
+
+    // Education
+    education: {
+        degree: 'Bachelor of Science in Information Technology',
+        school: 'University of Pangasinan - PHINMA',
+        location: 'Dagupan City, Pangasinan',
+        relevantCourses: [
+            'Software Engineering',
+            'Database Management Systems',
+            'Web Development',
+            'Quality Assurance & Testing',
+            'Project Management'
+        ]
+    },
+
+    // Awards and Achievements
+    awards: [
+        {
+            title: 'Rookie of the Year',
+            organization: 'Almont Business Connect Inc.',
+            description: 'Awarded for outstanding performance and exceptional contributions during the first year of employment.'
+        },
+        {
+            title: 'Key Achievements',
+            items: [
+                'Led physician orders validation and complete printing workflow',
+                'Developed patient calendar sticky note feature from scratch',
+                'Managed CI/CD pipelines ensuring smooth Azure cloud deployments',
+                'Founded and built Lumen Lens Studios photography brand'
+            ]
+        }
+    ]
+};
+
+// ===========================================================================
+// STYLE HELPERS - Customize terminal appearance
+// ===========================================================================
+// TIP: Change these to modify the look of different output types
+
+const STYLES = {
+    colors: {
+        success: '#00ff00',  // Green - for successful messages
+        error: '#ff4444',    // Red - for error messages
+        warning: '#ffaa00',  // Orange - for warnings
+        info: '#00aaff',     // Blue - for informational text
+        dim: '#666666',      // Gray - for less important text
+        highlight: '#ffffff' // White - for important text
+    },
+
+    // Status indicators
+    statusIcons: {
+        active: '●',
+        development: '●',
+        deployed: '●'
+    }
+};
+
+// ===========================================================================
+// COMMAND OUTPUT FUNCTIONS
+// ===========================================================================
+// TIP: Each function generates HTML output for a specific command
+// TIP: Modify these to change what displays when commands are run
+
+/**
+ * Displays the welcome banner when terminal first loads
+ * TIP: Customize ASCII art or replace with simple welcome message
+ */
 function showBanner() {
     const banner = `
 <span class="ascii-banner">
@@ -38,9 +262,9 @@ function showBanner() {
 ╚══════════════════════════════════════════════════════════╝
 </span>
 <span class="output-dim">╔══════════════════════════════════════════════════════════╗</span>
-<span class="output-dim">║  Portfolio Terminal v3.0.0 | Full-Stack & QA Specialist  ║</span>
+<span class="output-dim">║  Portfolio Terminal v${USER_DATA.terminalVersion} | ${USER_DATA.title}  ║</span>
 <span class="output-dim">╚══════════════════════════════════════════════════════════╝</span>
-<span class="output-success">●</span> <span class="output-highlight">Welcome to Jerdon Philip Macaraeg's Interactive Portfolio</span>
+<span class="output-success">●</span> <span class="output-highlight">Welcome to ${USER_DATA.name}'s Interactive Portfolio</span>
 <span class="output-success">●</span> Type <span class="output-info">help</span> to explore available commands
 <span class="output-success">●</span> Use <span class="output-info">↑↓</span> arrows for command history
 <span class="output-success">●</span> Press <span class="output-info">Tab</span> for autocomplete`;
@@ -48,6 +272,10 @@ function showBanner() {
     addOutput(banner, 'success');
 }
 
+/**
+ * Displays help menu with all available commands
+ * TIP: Add new commands here when you add them to the commands registry
+ */
 function showHelp() {
     const helpText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
@@ -90,37 +318,29 @@ function showHelp() {
     addOutput(helpText, '');
 }
 
+/**
+ * Displays about/portfolio summary
+ * TIP: Update the long description text with your own summary
+ */
 function showAbout() {
+    // Use template literal with USER_DATA for dynamic content
     const aboutText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">👨‍💻 Professional Profile</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
 
 <span class="output-highlight">Identity</span>
-<span class="output-dim">├─</span> <span class="output-success">Name:</span>     Jerdon Philip Macaraeg
-<span class="output-dim">├─</span> <span class="output-success">Role:</span>     Full-Stack Developer | QA Specialist
-<span class="output-dim">├─</span> <span class="output-success">Location:</span> #81 Tambac, Malasiqui, Pangasinan
-<span class="output-dim">├─</span> <span class="output-success">Phone:</span>    09168745394
-<span class="output-dim">└─</span> <span class="output-success">Email:</span>    <span class="link" onclick="window.location.href='mailto:jerdonphilipmacaraeg@gmail.com'">jerdonphilipmacaraeg@gmail.com</span>
+<span class="output-dim">├─</span> <span class="output-success">Name:</span>     ${USER_DATA.name}
+<span class="output-dim">├─</span> <span class="output-success">Role:</span>     ${USER_DATA.title}
+<span class="output-dim">├─</span> <span class="output-success">Location:</span> ${USER_DATA.location}
+<span class="output-dim">├─</span> <span class="output-success">Phone:</span>    ${USER_DATA.phone}
+<span class="output-dim">└─</span> <span class="output-success">Email:</span>    <span class="link" onclick="window.location.href='mailto:${USER_DATA.email}'">${USER_DATA.email}</span>
 
 <span class="output-highlight">Professional Summary</span>
-Experienced Full-Stack Engineer, QA professional, and independent 
-business owner with a focus on building resilient tools that solve 
-real-world problems. Grounded in a strong quality assurance 
-background—ranging from manual testing roots to modern end-to-end 
-automation with Playwright—I prioritize robust and thoroughly 
-validated code delivery.
-
-Highly adept at auditing full-stack applications using Postman, 
-browser DevTools, and Google Lighthouse and specialized in 
-architecting systems from Electron-based desktop apps to automated 
-Azure cloud deployments. I combine technical depth in Node.js and 
-SQL with a rigorous testing mindset and a sharp eye for UI/UX to 
-ensure every product is as stable and high-performing as it is 
-intuitive.
+${USER_DATA.shortBio}
 
 <span class="output-highlight">Current Status</span>
-<span class="output-success">● Active</span> — Open to freelance & full-time opportunities
+<span class="output-${USER_DATA.available ? 'success' : 'warning'}">● ${USER_DATA.available ? 'Active' : 'Unavailable'}</span> — ${USER_DATA.available ? 'Open to freelance & full-time opportunities' : 'Not currently looking'}
 
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="output-dim">For detailed skills, type: skills</span>
@@ -129,218 +349,198 @@ intuitive.
     addOutput(aboutText, '');
 }
 
+/**
+ * Displays skills matrix from USER_DATA
+ * TIP: This function automatically reads from USER_DATA.skills
+ */
 function showSkills() {
-    const skillsText = `
+    let skillsText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">🛠️ Technical Skills Matrix</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
+`;
 
-<span class="output-warning">🎨 Frontend Development</span>
-<span class="output-dim">├─</span> HTML5, CSS3, JavaScript (ES6+)
-<span class="output-dim">├─</span> AngularJS
-<span class="output-dim">├─</span> Tailwind CSS, Bootstrap
-<span class="output-dim">└─</span> Responsive & Mobile-First Design
+    // Dynamically generate skills from USER_DATA
+    const categoryIcons = {
+        frontend: '🎨',
+        backend: '⚙️',
+        databases: '🗄️',
+        qa: '🧪',
+        design: '🎯',
+        devops: '🔧',
+        operations: '📊',
+        languages: '🌐'
+    };
 
-<span class="output-warning">⚙️ Backend & Desktop</span>
-<span class="output-dim">├─</span> Node.js, Express.js
-<span class="output-dim">├─</span> PHP, Python, Java
-<span class="output-dim">├─</span> Electron (Desktop Apps)
-<span class="output-dim">├─</span> RESTful API Development
-<span class="output-dim">└─</span> npm, Sequelize ORM
+    const categoryNames = {
+        frontend: 'Frontend Development',
+        backend: 'Backend & Desktop',
+        databases: 'Database Systems',
+        qa: 'Quality Assurance',
+        design: 'UI/UX & Creative',
+        devops: 'DevOps & Tools',
+        operations: 'Operations',
+        languages: 'Languages'
+    };
 
-<span class="output-warning">🗄️ Database Systems</span>
-<span class="output-dim">├─</span> MySQL
-<span class="output-dim">├─</span> PostgreSQL
-<span class="output-dim">└─</span> SQLite
+    // Iterate through skills categories
+    for (const [category, skills] of Object.entries(USER_DATA.skills)) {
+        skillsText += `
+<span class="output-warning">${categoryIcons[category] || '•'} ${categoryNames[category] || category}</span>`;
 
-<span class="output-warning">🧪 Quality Assurance</span>
-<span class="output-dim">├─</span> Manual Testing
-<span class="output-dim">├─</span> Playwright (E2E Automation)
-<span class="output-dim">├─</span> Postman (API Testing)
-<span class="output-dim">├─</span> Browser DevTools Auditing
-<span class="output-dim">└─</span> Google Lighthouse Audits
+        skills.forEach((skill, index) => {
+            const isLast = index === skills.length - 1;
+            skillsText += `
+<span class="output-dim">${isLast ? '└─' : '├─'}</span> ${skill}`;
+        });
 
-<span class="output-warning">🎯 UI/UX & Creative</span>
-<span class="output-dim">├─</span> Wireframing & Mockups
-<span class="output-dim">├─</span> User Flows & Process Flows
-<span class="output-dim">├─</span> Adobe Photoshop
-<span class="output-dim">├─</span> Adobe Lightroom
-<span class="output-dim">└─</span> Photography
+        skillsText += '\n';
+    }
 
-<span class="output-warning">🔧 DevOps & Tools</span>
-<span class="output-dim">├─</span> Git & GitHub
-<span class="output-dim">├─</span> CI/CD Pipelines
-<span class="output-dim">└─</span> Azure DevOps
-
-<span class="output-warning">📊 Operations</span>
-<span class="output-dim">├─</span> Project Management
-<span class="output-dim">├─</span> Business Operations
-<span class="output-dim">└─</span> Professional Communication
-
-<span class="output-warning">🌐 Languages</span>
-<span class="output-dim">├─</span> English
-<span class="output-dim">└─</span> Tagalog
-
+    skillsText += `
 <span class="divider">══════════════════════════════════════════════════════════</span>`;
 
     addOutput(skillsText, '');
 }
 
+/**
+ * Displays work experience
+ * TIP: Modify USER_DATA.experience array to add/remove jobs
+ */
 function showExperience() {
-    const experienceText = `
+    let experienceText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">💼 Professional Experience</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
+`;
 
-<span class="output-warning">Lead Software Engineer (Freelance)</span>
-<span class="output-dim">Sakura Steel Development Corp & GT Sakura Trading Surplus Mall</span>
-<span class="output-dim">January 2026 - Present</span>
-<span class="output-info">• Directing full-stack development of a cross-company</span>
-<span class="output-info">  Inventory Tracking System unifying logistics between</span>
-<span class="output-info">  the development corp and trading surplus mall.</span>
-<span class="output-info">• Architecting a scalable desktop application utilizing</span>
-<span class="output-info">  Electron and modern JavaScript.</span>
-<span class="output-info">• Designing front-end UX with Tailwind CSS for a clean,</span>
-<span class="output-info">  utility-driven, consistent interface.</span>
-<span class="output-info">• Full project lifecycle ownership as the sole developer.</span>
-<span class="output-info">• Integrating Playwright for automated E2E testing and QA.</span>
+    USER_DATA.experience.forEach(job => {
+        experienceText += `
+<span class="output-warning">${job.title}</span>
+<span class="output-dim">${job.company}</span>
+<span class="output-dim">${job.period}</span>`;
 
-<span class="output-warning">Business Manager / Operations Lead</span>
-<span class="output-dim">Donato's Space Rental</span>
-<span class="output-dim">February 2026 - Present</span>
-<span class="output-info">• Oversee daily operations and tenant relations for a</span>
-<span class="output-info">  local rental property business.</span>
-<span class="output-info">• Manage end-to-end leasing workflows, contracts,</span>
-<span class="output-info">  payment tracking, and maintenance scheduling.</span>
+        job.highlights.forEach(highlight => {
+            experienceText += `
+<span class="output-info">• ${highlight}</span>`;
+        });
 
-<span class="output-warning">Lead Photographer & Founder</span>
-<span class="output-dim">Lumen Lens Studios</span>
-<span class="output-dim">August 2025 - Present</span>
-<span class="output-info">• Capture major client moments from weddings to portraits.</span>
-<span class="output-info">• Handle full creative process: scouting, directing, editing.</span>
-<span class="output-info">• Build brand focused on clear communication and client comfort.</span>
+        experienceText += '\n';
+    });
 
-<span class="output-warning">Web Developer</span>
-<span class="output-dim">Almont Business Connect Inc.</span>
-<span class="output-dim">July 2023 - December 2025</span>
-<span class="output-info">• Led UI/UX development using Bootstrap and custom CSS.</span>
-<span class="output-info">• Managed CI/CD pipelines using Azure DevOps on Microsoft Azure.</span>
-<span class="output-info">• Implemented Physician Orders validation and printing workflow.</span>
-<span class="output-info">• Developed patient calendar sticky note feature.</span>
-<span class="output-info">• Supported Summary & Reports using Sequelize ORM and MySQL.</span>
-<span class="output-info">• Led validation processes for Patient Intake.</span>
-
-<span class="output-warning">Intern Web Developer</span>
-<span class="output-dim">Almont Business Connect Inc.</span>
-<span class="output-dim">January 2023 - May 2023</span>
-<span class="output-info">• Contributed to Healthcare Visit Notes front-end and back-end.</span>
-<span class="output-info">• Assisted in coding, testing, and debugging complex systems.</span>
-<span class="output-info">• Authored and maintained project documentation.</span>
-
-<span class="output-warning">Intern Quality Assurance</span>
-<span class="output-dim">Almont Business Connect Inc.</span>
-<span class="output-dim">January 2023 - May 2023</span>
-<span class="output-info">• Conducted comprehensive manual testing of applications.</span>
-<span class="output-info">• Created and maintained detailed test case documentation.</span>
-<span class="output-info">• Collaborated with dev team to identify and track defects.</span>
-
+    experienceText += `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="output-dim">Type projects to see featured work | Type awards for recognitions</span>`;
 
     addOutput(experienceText, '');
 }
 
+/**
+ * Displays education information
+ */
 function showEducation() {
     const educationText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">🎓 Education</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
 
-<span class="output-highlight">Bachelor of Science in Information Technology</span>
-<span class="output-success">University of Pangasinan - PHINMA</span>
-<span class="output-dim">Dagupan City, Pangasinan</span>
+<span class="output-highlight">${USER_DATA.education.degree}</span>
+<span class="output-success">${USER_DATA.education.school}</span>
+<span class="output-dim">${USER_DATA.education.location}</span>
 
 <span class="output-highlight">Relevant Coursework</span>
-<span class="output-dim">├─</span> Software Engineering
-<span class="output-dim">├─</span> Database Management Systems
-<span class="output-dim">├─</span> Web Development
-<span class="output-dim">├─</span> Quality Assurance & Testing
-<span class="output-dim">└─</span> Project Management
+${USER_DATA.education.relevantCourses.map((course, index) =>
+        `<span class="output-dim">${index === USER_DATA.education.relevantCourses.length - 1 ? '└─' : '├─'}</span> ${course}`
+    ).join('\n')}
 
 <span class="divider">══════════════════════════════════════════════════════════</span>`;
 
     addOutput(educationText, '');
 }
 
+/**
+ * Displays awards and achievements
+ */
 function showAwards() {
-    const awardsText = `
+    let awardsText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">🏆 Honors & Recognitions</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
+`;
 
-<span class="output-highlight">Rookie of the Year</span>
-<span class="output-success">Almont Business Connect Inc.</span>
-<span class="output-dim">Awarded for outstanding performance and exceptional</span>
-<span class="output-dim">contributions during the first year of employment.</span>
+    USER_DATA.awards.forEach(award => {
+        awardsText += `
+<span class="output-highlight">${award.title}</span>
+<span class="output-success">${award.organization || ''}</span>`;
 
-<span class="output-highlight">Key Achievements</span>
-<span class="output-dim">├─</span> Led physician orders validation and complete printing workflow
-<span class="output-dim">├─</span> Developed patient calendar sticky note feature from scratch
-<span class="output-dim">├─</span> Managed CI/CD pipelines ensuring smooth Azure cloud deployments
-<span class="output-dim">└─</span> Founded and built Lumen Lens Studios photography brand
+        if (award.description) {
+            awardsText += `
+<span class="output-dim">${award.description}</span>`;
+        }
 
+        if (award.items) {
+            award.items.forEach(item => {
+                awardsText += `
+<span class="output-dim">├─</span> ${item}`;
+            });
+        }
+
+        awardsText += '\n';
+    });
+
+    awardsText += `
 <span class="divider">══════════════════════════════════════════════════════════</span>`;
 
     addOutput(awardsText, '');
 }
 
+/**
+ * Displays projects from USER_DATA.projects array
+ * TIP: Add/remove projects by modifying the projects array in USER_DATA
+ */
 function showProjects() {
-    const projectsText = `
+    let projectsText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">📁 Featured Projects</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
+`;
 
-<span class="output-warning">[1] Cross-Company Inventory Tracking System</span>
-<span class="output-dim">├─ Type:</span>        Desktop Application (Electron)
-<span class="output-dim">├─ Role:</span>        Lead Software Engineer (Sole Developer)
-<span class="output-dim">├─ Technologies:</span> Electron, Tailwind CSS, PostgreSQL
-<span class="output-dim">├─ Testing:</span>      Playwright E2E Automation
-<span class="output-dim">├─ Status:</span>       <span class="output-warning">● In Active Development</span>
-<span class="output-dim">├─ Description:</span>  Unified logistics system connecting
-<span class="output-dim">│                   Sakura Steel Development Corp and
-<span class="output-dim">│                   GT Sakura Trading Surplus Mall.
-<span class="output-dim">└─ Link:</span>         <span class="link" onclick="addOutput('🔒 Proprietary software. Contact for details.', 'warning')">Request Access →</span>
+    USER_DATA.projects.forEach(project => {
+        const statusClass = project.status === 'deployed' || project.status === 'active' ? 'success' : 'warning';
 
-<span class="output-warning">[2] Wedding Landing Page</span>
-<span class="output-dim">├─ Type:</span>        Single-Page Application
-<span class="output-dim">├─ Technologies:</span> HTML, CSS, Tailwind CSS, JavaScript
-<span class="output-dim">├─ Status:</span>       <span class="output-success">● Deployed</span>
-<span class="output-dim">├─ Description:</span>  Wedding Event Hub — Garden-themed digital
-<span class="output-dim">│                   invitation and guest management platform
-<span class="output-dim">│                   with interactive photo gallery and maps.
-<span class="output-dim">└─ URL:</span>         <span class="link" onclick="window.open('https://lumen-lens-ph.github.io/christopher-jhohanna-wedding/')">Launch Project →</span>
+        projectsText += `
+<span class="output-warning">[${project.id}] ${project.name}</span>
+<span class="output-dim">├─ Type:</span>        ${project.type}
+${project.role ? `<span class="output-dim">├─ Role:</span>        ${project.role}\n` : ''}
+<span class="output-dim">├─ Technologies:</span> ${project.technologies ? project.technologies.join(', ') : 'N/A'}
+${project.testing ? `<span class="output-dim">├─ Testing:</span>      ${project.testing}\n` : ''}
+<span class="output-dim">├─ Status:</span>       <span class="output-${statusClass}">● ${project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span>
+<span class="output-dim">├─ Description:</span>  ${project.description}`;
 
-<span class="output-warning">[3] Task Management App</span>
-<span class="output-dim">├─ Type:</span>        Productivity Application
-<span class="output-dim">├─ Technologies:</span> HTML, CSS, JavaScript, Vue, Tailwind CSS
-<span class="output-dim">├─ Status:</span>       <span class="output-warning">● In Development</span>
-<span class="output-dim">├─ Description:</span>  Organize tasks, set deadlines, and track
-<span class="output-dim">│                   progress with an intuitive interface.
-<span class="output-dim">└─ URL:</span>         <span class="link" onclick="window.location.href='docs/assets/html/maintenance/maintenance.html'">View Details →</span>
+        // Handle project links
+        if (project.link) {
+            if (project.isProprietary) {
+                projectsText += `
+<span class="output-dim">└─ Link:</span>         <span class="link" onclick="addOutput('🔒 Proprietary software. Contact for details.', 'warning')">Request Access →</span>`;
+            } else {
+                projectsText += `
+<span class="output-dim">└─ URL:</span>         <span class="link" onclick="window.open('${project.link}')">Launch Project →</span>`;
+            }
+        }
 
-<span class="output-warning">[4] Lumen Lens Studios</span>
-<span class="output-dim">├─ Type:</span>        Photography Business
-<span class="output-dim">├─ Role:</span>        Founder & Lead Photographer
-<span class="output-dim">├─ Status:</span>       <span class="output-success">● Active</span>
-<span class="output-dim">└─ Description:</span>  Professional photography services for
-<span class="output-dim">                    weddings, portraits, and events.
+        projectsText += '\n';
+    });
 
+    projectsText += `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="output-dim">💡 Click on project links to explore further</span>`;
 
     addOutput(projectsText, '');
 }
 
+/**
+ * Displays contact information
+ */
 function showContact() {
     const contactText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
@@ -348,12 +548,12 @@ function showContact() {
 <span class="divider">──────────────────────────────────────────────────────────</span>
 
 <span class="output-highlight">Primary Contact</span>
-<span class="output-dim">├─</span> <span class="output-success">📱 Phone:</span>    09168745394
-<span class="output-dim">├─</span> <span class="output-success">📧 Email:</span>    <span class="link" onclick="window.location.href='mailto:jerdonphilipmacaraeg@gmail.com'">jerdonphilipmacaraeg@gmail.com</span>
-<span class="output-dim">└─</span> <span class="output-success">📍 Address:</span>  #81 Tambac, Malasiqui, Pangasinan
+<span class="output-dim">├─</span> <span class="output-success">📱 Phone:</span>    ${USER_DATA.phone}
+<span class="output-dim">├─</span> <span class="output-success">📧 Email:</span>    <span class="link" onclick="window.location.href='mailto:${USER_DATA.email}'">${USER_DATA.email}</span>
+<span class="output-dim">└─</span> <span class="output-success">📍 Address:</span>  ${USER_DATA.location}
 
 <span class="output-highlight">Professional Status</span>
-<span class="output-dim">└─</span> <span class="output-success">Available:</span>  Freelance & Full-time opportunities
+<span class="output-dim">└─</span> <span class="output-${USER_DATA.available ? 'success' : 'warning'}">Available:</span>  ${USER_DATA.available ? 'Freelance & Full-time opportunities' : 'Not currently available'}
 
 <span class="output-highlight">Quick Actions</span>
 <span class="output-dim">├─</span> Type <span class="output-info">social</span> for social media links
@@ -361,21 +561,38 @@ function showContact() {
 <span class="output-dim">└─</span> Type <span class="output-info">experience</span> for work history
 
 <span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="output-dim">I typically respond within 24 hours</span>`;
+<span class="output-dim">I typically respond within ${USER_DATA.responseTime}</span>`;
 
     addOutput(contactText, '');
 }
 
+/**
+ * Displays social media links
+ */
 function showSocial() {
-    const socialText = `
+    const { social } = USER_DATA;
+    let socialText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="section-title">🌐 Social Networks</span>
 <span class="divider">──────────────────────────────────────────────────────────</span>
+`;
 
-<span class="output-dim">├─</span> <span class="output-success">Facebook:</span>  <span class="link" onclick="window.open('https://www.facebook.com/Philip.Je.Mac')">facebook.com/Philip.Je.Mac</span>
-<span class="output-dim">├─</span> <span class="output-success">Instagram:</span> <span class="link" onclick="window.open('https://www.instagram.com/simple_jerdzz')">instagram.com/simple_jerdzz</span>
-<span class="output-dim">├─</span> <span class="output-success">GitHub:</span>    <span class="link" onclick="window.open('https://github.com/JerdonPhilip')">github.com/JerdonPhilip</span>
-<span class="output-dim">└─</span> <span class="output-success">Business:</span>  Lumen Lens Studios (Photography)
+    const links = [
+        { label: 'Facebook', url: social.facebook, icon: '📘' },
+        { label: 'Instagram', url: social.instagram, icon: '📷' },
+        { label: 'GitHub', url: social.github, icon: '💻' },
+        { label: 'LinkedIn', url: social.linkedin, icon: '💼' }
+    ];
+
+    links.forEach((link, index) => {
+        if (link.url) {
+            const isLast = index === links.length - 1 || !links.slice(index + 1).some(l => l.url);
+            socialText += `
+<span class="output-dim">${isLast ? '└─' : '├─'}</span> <span class="output-success">${link.icon} ${link.label}:</span>  <span class="link" onclick="window.open('${link.url}')">${link.url.replace('https://', '')}</span>`;
+        }
+    });
+
+    socialText += `
 
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="output-dim">Click any link to open in new tab</span>`;
@@ -383,6 +600,9 @@ function showSocial() {
     addOutput(socialText, '');
 }
 
+/**
+ * Displays system info (like neofetch command)
+ */
 function showNeofetch() {
     const neofetchText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
@@ -399,15 +619,15 @@ function showNeofetch() {
       ██    ██████    ██
 </div>
 <div class="neofetch-info">
-<span class="label">jerdon@portfolio</span>
+<span class="label">user@portfolio</span>
 <span class="output-dim">──────────────────────────</span>
-<span class="label">Name:</span>     <span class="value">Jerdon Philip Macaraeg</span>
-<span class="label">Role:</span>     <span class="value">Full-Stack Dev | QA Specialist</span>
-<span class="label">OS:</span>       <span class="value">Web Developer OS v3.0</span>
-<span class="label">Kernel:</span>   <span class="value">JavaScript ES2024</span>
-<span class="label">Shell:</span>    <span class="value">bash 5.2</span>
+<span class="label">Name:</span>     <span class="value">${USER_DATA.name}</span>
+<span class="label">Role:</span>     <span class="value">${USER_DATA.title}</span>
+<span class="label">OS:</span>       <span class="value">Web Developer OS v${USER_DATA.terminalVersion}</span>
+<span class="label">Kernel:</span>   <span class="value">${USER_DATA.kernel}</span>
+<span class="label">Shell:</span>    <span class="value">${USER_DATA.shell}</span>
 <span class="label">Uptime:</span>   <span class="value">Since 2023</span>
-<span class="label">Packages:</span>  <span class="value">50+ projects completed</span>
+<span class="label">Packages:</span>  <span class="value">${USER_DATA.projects.length}+ projects completed</span>
 <span class="label">CPU:</span>      <span class="value">Brain v1.0 @ 100% creative</span>
 <span class="label">Testing:</span>  <span class="value">Playwright + Manual QA</span>
 <span class="label">Theme:</span>    <span class="value">Matrix Green Professional</span>
@@ -418,175 +638,40 @@ function showNeofetch() {
     addOutput(neofetchText, '');
 }
 
+/**
+ * Handles resume download
+ * TIP: Change the file path in USER_DATA.resumeFile
+ */
 function downloadResume() {
     addOutput('', '');
     addOutput('📥 Preparing resume download...', 'info');
-    addOutput('├─ File: JERDON_MACARAEG-CV.pdf', 'dim');
+    addOutput('├─ File: RESUME.pdf', 'dim');
     addOutput('├─ Format: PDF Document', 'dim');
-    addOutput('├─ Candidate: Jerdon Philip Macaraeg', 'dim');
-    addOutput('├─ Role: Full-Stack Developer | QA Specialist', 'dim');
+    addOutput(`├─ Candidate: ${USER_DATA.name}`, 'dim');
+    addOutput(`├─ Role: ${USER_DATA.title}`, 'dim');
 
     setTimeout(() => {
-        window.open('assets/files/JERDON_MACARAEG-CV.pdf', '_blank');
+        window.open(USER_DATA.resumeFile, '_blank');
         addOutput('└─ ✅ Download initiated successfully!', 'success');
     }, 800);
 }
 
+/**
+ * Displays resume content in terminal
+ * TIP: Update this with your actual resume content
+ */
 function showResume() {
+    // This is a simplified view - you can customize the layout
     const resumeText = `
 <span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="section-title">📄 RESUME</span>
+<span class="section-title">📄 RESUME - ${USER_DATA.name.toUpperCase()}</span>
 <span class="divider">══════════════════════════════════════════════════════════</span>
 
-<span class="output-highlight">JERDON PHILIP MACARAEG</span>
-<span class="output-dim">#81 Tambac, Malasiqui, Pangasinan | 09168745394 | jerdonphilipmacaraeg@gmail.com</span>
-<span class="output-success">FULL-STACK DEVELOPER | QA SPECIALIST</span>
+<span class="output-highlight">CONTACT</span>
+${USER_DATA.location} | ${USER_DATA.phone} | ${USER_DATA.email}
 
-<span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="section-title">SUMMARY</span>
-<span class="divider">══════════════════════════════════════════════════════════</span>
-Experienced Full-Stack Engineer, QA professional, and independent business owner
-with a focus on building resilient tools that solve real-world problems. Grounded
-in a strong quality assurance background—ranging from manual testing roots to
-modern end-to-end automation with Playwright—I prioritize robust and thoroughly
-validated code delivery. Highly adept at auditing full-stack applications using
-Postman, browser DevTools, and Google Lighthouse and specialized in architecting
-systems from Electron-based desktop apps to automated Azure cloud deployments.
-I combine technical depth in Node.js and SQL with a rigorous testing mindset and
-a sharp eye for UI/UX to ensure every product is as stable and high-performing
-as it is intuitive.
-
-<span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="section-title">WORK EXPERIENCE</span>
-<span class="divider">══════════════════════════════════════════════════════════</span>
-
-<span class="output-warning">Lead Software Engineer (Freelance)</span>
-<span class="output-dim">Sakura Steel Development Corp & GT Sakura Trading Surplus Mall</span>
-<span class="output-dim">January 2026 - Present</span>
-<span class="divider">──────────────────────────────────────────────────────────</span>
-<span class="output-info">• Directing the full-stack development of a cross-company</span>
-<span class="output-info">  Inventory Tracking System designed to unify logistics</span>
-<span class="output-info">  between the development corp and the trading surplus mall.</span>
-<span class="output-info">• Architecting a scalable desktop application utilizing</span>
-<span class="output-info">  Electron and modern JavaScript.</span>
-<span class="output-info">• Designing and implementing the front-end user experience</span>
-<span class="output-info">  using Tailwind CSS to ensure a clean, utility-driven,</span>
-<span class="output-info">  and consistent interface across all inventory modules.</span>
-<span class="output-info">• Taking full ownership of the project lifecycle—from</span>
-<span class="output-info">  initial requirements gathering to active coding—as the</span>
-<span class="output-info">  sole developer on the project.</span>
-<span class="output-info">• Developing and executing rigorous QA workflows,</span>
-<span class="output-info">  integrating Playwright for automated end-to-end testing</span>
-<span class="output-info">  to validate core system features and ensure software</span>
-<span class="output-info">  stability during the active build process.</span>
-
-<span class="output-warning">Business Manager / Operations Lead</span>
-<span class="output-dim">Donato's Space Rental</span>
-<span class="output-dim">February 2026 - Present</span>
-<span class="divider">──────────────────────────────────────────────────────────</span>
-<span class="output-info">• Oversee daily operations and tenant relations for a</span>
-<span class="output-info">  local rental property business, ensuring high occupancy</span>
-<span class="output-info">  rates and streamlined administrative processes.</span>
-<span class="output-info">• Managed end-to-end leasing workflows, including contract</span>
-<span class="output-info">  preparation, payment tracking, and property maintenance</span>
-<span class="output-info">  scheduling.</span>
-<span class="output-info">• Acted as the primary point of contact for facility</span>
-<span class="output-info">  inquiries, resolving tenant issues promptly while</span>
-<span class="output-info">  maintaining property standards and compliance.</span>
-
-<span class="output-warning">Lead Photographer & Founder</span>
-<span class="output-dim">Lumen Lens Studios</span>
-<span class="output-dim">August 2025 - Present</span>
-<span class="divider">──────────────────────────────────────────────────────────</span>
-<span class="output-info">• Capturing the big moments for clients, from the energy</span>
-<span class="output-info">  of a wedding to the personal feel of a portrait session.</span>
-<span class="output-info">• Handling the entire creative process, including scout</span>
-<span class="output-info">  locations, directing shots on the day, and the detailed</span>
-<span class="output-info">  editing work that goes into the final delivery.</span>
-<span class="output-info">• Building a brand from the ground up, focusing on clear</span>
-<span class="output-info">  communication and making sure every client feels</span>
-<span class="output-info">  comfortable and confident in front of the camera.</span>
-
-<span class="output-warning">Web Developer</span>
-<span class="output-dim">Almont Business Connect Inc.</span>
-<span class="output-dim">July 2023 - December 2025</span>
-<span class="divider">──────────────────────────────────────────────────────────</span>
-<span class="output-info">• Led UI and UX development in the early stages of the</span>
-<span class="output-info">  system. Used Bootstrap and custom CSS to build the</span>
-<span class="output-info">  interface. Managed design for all modules with consistent</span>
-<span class="output-info">  quality across the Oasis module, Visits modules, and</span>
-<span class="output-info">  Other Note modules.</span>
-<span class="output-info">• Managed CI and CD pipelines using Azure DevOps to ensure</span>
-<span class="output-info">  consistent and automated deployment of software updates.</span>
-<span class="output-info">  Supported a scalable cloud environment on Microsoft Azure.</span>
-<span class="output-info">• Supported Oasis validations and workflows, ensuring</span>
-<span class="output-info">  maintenance and updates on an annual basis.</span>
-<span class="output-info">• Led and implemented Physician Orders validation and</span>
-<span class="output-info">  features, including full printing workflow. Developed</span>
-<span class="output-info">  associated CRUD functions.</span>
-<span class="output-info">• Supported the Summary and Reports features for the</span>
-<span class="output-info">  healthcare system using ORM queries in Sequelize and</span>
-<span class="output-info">  custom queries in MySQL.</span>
-<span class="output-info">• Developed the patient calendar sticky note feature.</span>
-<span class="output-info">• Led validation processes for Patient Intake.</span>
-
-<span class="output-warning">Intern Web Developer</span>
-<span class="output-dim">Almont Business Connect Inc.</span>
-<span class="output-dim">January 2023 - May 2023</span>
-<span class="divider">──────────────────────────────────────────────────────────</span>
-<span class="output-info">• Contributed to the development of Healthcare Visit Notes</span>
-<span class="output-info">  by creating front-end components and back-end logic to</span>
-<span class="output-info">  support accurate patient charting.</span>
-<span class="output-info">• Assisted the development team in coding and testing new</span>
-<span class="output-info">  software features, ensuring all applications met</span>
-<span class="output-info">  functionality and quality standards prior to release.</span>
-<span class="output-info">• Collaborated with senior developers to troubleshoot and</span>
-<span class="output-info">  resolve technical issues, including bugs and performance</span>
-<span class="output-info">  bottlenecks, gaining hands-on experience in debugging</span>
-<span class="output-info">  complex systems.</span>
-<span class="output-info">• Authored and maintained project documentation, supporting</span>
-<span class="output-info">  team knowledge sharing and providing a reliable reference</span>
-<span class="output-info">  for future maintenance and onboarding.</span>
-
-<span class="output-warning">Intern Quality Assurance</span>
-<span class="output-dim">Almont Business Connect Inc.</span>
-<span class="output-dim">January 2023 - May 2023</span>
-<span class="divider">──────────────────────────────────────────────────────────</span>
-<span class="output-info">• Conducted comprehensive manual testing of software</span>
-<span class="output-info">  applications and features to verify functionality,</span>
-<span class="output-info">  usability, and compliance with quality and performance</span>
-<span class="output-info">  standards.</span>
-<span class="output-info">• Created and maintained detailed test case documentation,</span>
-<span class="output-info">  standardizing procedures to ensure consistent, accurate,</span>
-<span class="output-info">  and repeatable quality assurance processes.</span>
-<span class="output-info">• Collaborated with the development team to identify,</span>
-<span class="output-info">  document, and track defects through resolution, improving</span>
-<span class="output-info">  code quality and ensuring smoother software releases.</span>
-
-<span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="section-title">EDUCATION</span>
-<span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="output-success">Bachelor of Science in Information Technology</span>
-<span class="output-dim">University Of Pangasinan - PHINMA</span>
-
-<span class="divider">══════════════════════════════════════════════════════════</span>
-<span class="section-title">ADDITIONAL INFORMATION</span>
-<span class="divider">══════════════════════════════════════════════════════════</span>
-
-<span class="output-highlight">Technical Skills:</span>
-<span class="output-dim">Wireframes, Mockups, User Flows, Process Flows, Adobe Photoshop,</span>
-<span class="output-dim">HTML/HTML5, Bootstrap, Responsive Design, Tailwind CSS, CSS/CSS3,</span>
-<span class="output-dim">Python, Java, AngularJS, PHP, JavaScript, Playwright, NodeJS,</span>
-<span class="output-dim">Express.js, npm, RESTful APIs, Sequelize, MySQL, SQLite,</span>
-<span class="output-dim">PostgreSQL, Git, CI/CD, and Azure DevOps, Electron, Photography,</span>
-<span class="output-dim">Digital Post-Processing (Lightroom), Business Operations,</span>
-<span class="output-dim">Project Management.</span>
-
-<span class="output-highlight">Languages:</span>
-<span class="output-dim">English and Tagalog</span>
-
-<span class="output-highlight">Awards/Activities:</span>
-<span class="output-dim">Received the "Rookie of the Year" award for outstanding performance.</span>
+<span class="output-highlight">SUMMARY</span>
+${USER_DATA.shortBio}
 
 <span class="divider">══════════════════════════════════════════════════════════</span>
 <span class="output-dim">Type resume to download PDF version | Type contact to get in touch</span>`;
@@ -594,12 +679,18 @@ as it is intuitive.
     addOutput(resumeText, '');
 }
 
+/**
+ * Displays current user identity
+ */
 function showWhoami() {
-    addOutput('jerdonphilipmacaraeg', 'success');
-    addOutput('Full-Stack Developer | QA Specialist | Entrepreneur', 'dim');
-    addOutput('Location: Pangasinan, Philippines', 'dim');
+    addOutput(USER_DATA.name.toLowerCase().replace(/\s+/g, ''), 'success');
+    addOutput(USER_DATA.title, 'dim');
+    addOutput(`Location: ${USER_DATA.location}`, 'dim');
 }
 
+/**
+ * Displays current date and time
+ */
 function showDate() {
     const now = new Date();
     const options = {
@@ -615,43 +706,56 @@ function showDate() {
     addOutput(now.toLocaleDateString('en-US', options), 'info');
 }
 
+/**
+ * Displays terminal version info
+ */
 function showVersion() {
     addOutput('╔════════════════════════════════════╗', 'success');
-    addOutput('║  Portfolio Terminal v3.0.0        ║', 'success');
-    addOutput('║  Build: 2026.05.16                ║', 'success');
-    addOutput('║  Kernel: JavaScript ES2024        ║', 'success');
-    addOutput('║  Author: Jerdon Philip Macaraeg   ║', 'success');
+    addOutput(`║  Portfolio Terminal v${USER_DATA.terminalVersion}        ║`, 'success');
+    addOutput(`║  Build: ${USER_DATA.buildDate}                ║`, 'success');
+    addOutput(`║  Kernel: ${USER_DATA.kernel}        ║`, 'success');
+    addOutput(`║  Author: ${USER_DATA.name}   ║`, 'success');
     addOutput('╚════════════════════════════════════╝', 'success');
-    addOutput('Full-Stack Developer | QA Specialist | Entrepreneur', 'dim');
+    addOutput(USER_DATA.title, 'dim');
 }
 
+/**
+ * Lists projects in file tree format
+ */
 function listProjects() {
-    const listText = `
-<span class="output-success">~/projects/</span>
-<span class="output-dim">├──</span> <span class="output-info">inventory-tracking-system/</span>
-<span class="output-dim">│   ├──</span> electron-app/
-<span class="output-dim">│   ├──</span> tests/ (Playwright)
-<span class="output-dim">│   └──</span> database/
-<span class="output-dim">├──</span> <span class="output-info">wedding-landing-page/</span>
-<span class="output-dim">│   ├──</span> index.html
-<span class="output-dim">│   ├──</span> styles.css
-<span class="output-dim">│   └──</span> script.js
-<span class="output-dim">├──</span> <span class="output-info">task-management-app/</span>
-<span class="output-dim">│   ├──</span> src/
-<span class="output-dim">│   └──</span> package.json
-<span class="output-dim">└──</span> <span class="output-info">lumen-lens-studios/</span>
-<span class="output-dim">    └──</span> Photography Business
+    let listText = `
+<span class="output-success">~/projects/</span>`;
 
-<span class="output-dim">4 projects | 3 in development | 1 deployed | 1 active business</span>`;
+    USER_DATA.projects.forEach((project, index) => {
+        const isLast = index === USER_DATA.projects.length - 1;
+        const projectSlug = project.name.toLowerCase().replace(/\s+/g, '-');
+
+        listText += `
+<span class="output-dim">${isLast ? '└──' : '├──'}</span> <span class="output-info">${projectSlug}/</span>`;
+    });
+
+    const deployed = USER_DATA.projects.filter(p => p.status === 'deployed').length;
+    const dev = USER_DATA.projects.filter(p => p.status === 'development').length;
+    const active = USER_DATA.projects.filter(p => p.status === 'active').length;
+
+    listText += `
+
+<span class="output-dim">${USER_DATA.projects.length} projects | ${dev} in development | ${deployed} deployed | ${active} active</span>`;
 
     addOutput(listText, '');
 }
 
+/**
+ * Clears the terminal screen and shows banner again
+ */
 function clearTerminal() {
     terminalOutput.innerHTML = '';
     showBanner();
 }
 
+/**
+ * Easter egg - sudo command response
+ */
 function sudoCommand() {
     addOutput('╔════════════════════════════════════╗', 'warning');
     addOutput('║  🔒 Access Denied                 ║', 'warning');
@@ -661,6 +765,9 @@ function sudoCommand() {
     addOutput('╚════════════════════════════════════╝', 'warning');
 }
 
+/**
+ * Easter egg - exit command response (doesn't actually exit)
+ */
 function exitCommand() {
     addOutput('Logging out...', 'warning');
     setTimeout(() => {
@@ -668,7 +775,7 @@ function exitCommand() {
         addOutput('╔════════════════════════════════════╗', 'info');
         addOutput('║  Session not terminated. 😊       ║', 'info');
         addOutput('║  Feel free to continue exploring  ║', 'info');
-        addOutput("║  Jerdon Philip Macaraeg's         ║", 'info');
+        addOutput(`║  ${USER_DATA.name}'s              ║`, 'info');
         addOutput('║  professional portfolio.          ║', 'info');
         addOutput('╚════════════════════════════════════╝', 'info');
         addOutput('', '');
@@ -679,7 +786,15 @@ function exitCommand() {
 // ===========================================================================
 // COMMANDS REGISTRY
 // ===========================================================================
+// TIP: Add new commands here by creating a function above and registering it
 
+/**
+ * Main commands mapping - Maps command names to their functions
+ * TIP: To add a custom command:
+ * 1. Create a function like showCustom()
+ * 2. Add 'custom': showCustom to this object
+ * 3. Add help text in showHelp()
+ */
 const commands = {
     'help': showHelp,
     'about': showAbout,
@@ -703,6 +818,10 @@ const commands = {
     'exit': exitCommand
 };
 
+/**
+ * Command aliases - Shortcuts for commands
+ * TIP: Add your own shortcuts here
+ */
 const aliases = {
     'h': 'help',
     'a': 'about',
@@ -722,9 +841,15 @@ const aliases = {
 };
 
 // ===========================================================================
-// CORE FUNCTIONS
+// CORE TERMINAL FUNCTIONS
 // ===========================================================================
+// TIP: These handle the actual terminal behavior - modify with caution
 
+/**
+ * Adds formatted output to the terminal
+ * @param {string} text - HTML string to display
+ * @param {string} className - CSS class for styling (success, error, warning, info, dim)
+ */
 function addOutput(text, className = '') {
     const line = document.createElement('div');
     line.className = `output-line output-${className}`;
@@ -733,13 +858,22 @@ function addOutput(text, className = '') {
     terminalOutput.scrollTop = terminalOutput.scrollHeight;
 }
 
+/**
+ * Adds command echo (shows what user typed)
+ * @param {string} command - The command user entered
+ */
 function addCommandEcho(command) {
     const echo = `
-<span class="command-history">┌─[<span class="prompt-user">jerdon</span>@<span class="prompt-host">portfolio</span>]─[<span class="prompt-path">~</span>]</span>
+<span class="command-history">┌─[<span class="prompt-user">user</span>@<span class="prompt-host">portfolio</span>]─[<span class="prompt-path">~</span>]</span>
 <span class="command-history">└──╼ $ ${escapeHtml(command)}</span>`;
     addOutput(echo, 'dim');
 }
 
+/**
+ * Sanitizes HTML to prevent XSS
+ * @param {string} text - Raw text to sanitize
+ * @returns {string} - Sanitized HTML string
+ */
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -750,11 +884,15 @@ function escapeHtml(text) {
 // INITIALIZATION
 // ===========================================================================
 
+/**
+ * Initializes the terminal application
+ */
 function init() {
     showBanner();
     detectMobile();
     setupEventListeners();
 
+    // Hide swipe hint after 5 seconds
     if (swipeHint) {
         setTimeout(() => {
             swipeHint.style.opacity = '0';
@@ -766,6 +904,9 @@ function init() {
     }
 }
 
+/**
+ * Detects if device is mobile and shows/hides mobile menu button
+ */
 function detectMobile() {
     isMobile = window.innerWidth <= 768;
     if (mobileMenuToggle) {
@@ -773,7 +914,11 @@ function detectMobile() {
     }
 }
 
+/**
+ * Sets up all event listeners for the terminal
+ */
 function setupEventListeners() {
+    // Mobile menu toggle
     if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', toggleMobileMenu);
     }
@@ -784,6 +929,7 @@ function setupEventListeners() {
         overlay.addEventListener('click', closeMobileMenu);
     }
 
+    // Quick command buttons (mobile panel)
     document.querySelectorAll('.quick-command-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const command = this.dataset.command;
@@ -792,6 +938,7 @@ function setupEventListeners() {
         });
     });
 
+    // Send button
     if (sendBtn) {
         sendBtn.addEventListener('click', () => {
             const input = terminalInput.value;
@@ -802,15 +949,18 @@ function setupEventListeners() {
         });
     }
 
+    // Terminal input keyboard handler
     if (terminalInput) {
         terminalInput.addEventListener('keydown', handleInputKeydown);
     }
 
+    // Window resize handler
     window.addEventListener('resize', () => {
         detectMobile();
         if (terminalInput) terminalInput.focus();
     });
 
+    // Click on terminal output focuses input
     if (terminalOutput) {
         terminalOutput.addEventListener('click', (e) => {
             if (!e.target.closest('.link')) {
@@ -819,8 +969,10 @@ function setupEventListeners() {
         });
     }
 
+    // Swipe gestures for mobile
     setupSwipeGestures();
 
+    // Window control buttons
     const minimizeBtn = document.getElementById('minimizeBtn');
     const maximizeBtn = document.getElementById('maximizeBtn');
     const closeBtn = document.getElementById('closeBtn');
@@ -851,6 +1003,10 @@ function setupEventListeners() {
 // INPUT HANDLING
 // ===========================================================================
 
+/**
+ * Handles keyboard input in the terminal
+ * @param {KeyboardEvent} e - Keyboard event
+ */
 function handleInputKeydown(e) {
     if (e.key === 'Enter') {
         const input = this.value;
@@ -908,6 +1064,9 @@ function handleInputKeydown(e) {
 // MOBILE SUPPORT
 // ===========================================================================
 
+/**
+ * Sets up swipe gestures for mobile devices
+ */
 function setupSwipeGestures() {
     let touchStartX = 0;
     let touchEndX = 0;
@@ -933,6 +1092,9 @@ function setupSwipeGestures() {
     }
 }
 
+/**
+ * Toggles mobile menu open/closed
+ */
 function toggleMobileMenu() {
     if (quickCommandsPanel && quickCommandsPanel.classList.contains('active')) {
         closeMobileMenu();
@@ -941,12 +1103,18 @@ function toggleMobileMenu() {
     }
 }
 
+/**
+ * Opens mobile quick commands panel
+ */
 function openMobileMenu() {
     if (quickCommandsPanel) quickCommandsPanel.classList.add('active');
     if (overlay) overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
+/**
+ * Closes mobile quick commands panel
+ */
 function closeMobileMenu() {
     if (quickCommandsPanel) quickCommandsPanel.classList.remove('active');
     if (overlay) overlay.classList.remove('active');
@@ -954,16 +1122,22 @@ function closeMobileMenu() {
 }
 
 // ===========================================================================
-// COMMAND EXECUTION
+// COMMAND EXECUTION ENGINE
 // ===========================================================================
 
+/**
+ * Executes a terminal command
+ * @param {string} input - Raw command input from user
+ */
 function executeCommand(input) {
     const trimmedInput = input.trim().toLowerCase();
 
     if (!trimmedInput) return;
 
+    // Echo the command back to terminal
     addCommandEcho(input);
 
+    // Check for aliases first, then direct commands
     const commandName = aliases[trimmedInput] || trimmedInput;
 
     if (commands[commandName]) {
@@ -973,25 +1147,20 @@ function executeCommand(input) {
         addOutput('Type <span class="output-info">help</span> to see available commands', 'dim');
     }
 
+    // Update command history
     commandHistory.push(input);
     historyIndex = commandHistory.length;
 
+    // Add spacing and focus input
     addOutput('', '');
-
     if (terminalInput) terminalInput.focus();
-}
-
-// Add command echo
-function addCommandEcho(command) {
-    const echo = `<span class="command-history">┌─[<span class="prompt-user">jerdon</span>@<span class="prompt-host">portfolio</span>]─[<span class="prompt-path">~</span>]
-└──╼ $ ${escapeHtml(command)}</span>`;
-    addOutput(echo, 'dim');
 }
 
 // ===========================================================================
 // STARTUP
 // ===========================================================================
 
+// Start the terminal when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         init();
@@ -1001,3 +1170,9 @@ if (document.readyState === 'loading') {
     init();
     if (terminalInput) terminalInput.focus();
 }
+
+// ===========================================================================
+// EXPORT FOR MODULE USE (Optional)
+// ===========================================================================
+// If you want to use this as a module, uncomment below:
+// export { commands, USER_DATA, executeCommand, addOutput, clearTerminal };
