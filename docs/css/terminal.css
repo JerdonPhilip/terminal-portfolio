@@ -1,19 +1,124 @@
+/**
+ * ===========================================================================
+ * TERMINAL PORTFOLIO - PROFESSIONAL STYLESHEET v3.0.0
+ * ===========================================================================
+ * 
+ * @description Complete stylesheet for the interactive terminal portfolio.
+ *              Uses CSS custom properties for easy theming and customization.
+ *              Fully responsive with mobile-first considerations.
+ * 
+ * @author      Jerdon Philip Macaraeg
+ * @license     MIT - Free to use, modify, and distribute
+ * @version     3.0.0
+ * @since       2023
+ * @updated     2026-05-16
+ * 
+ * ===========================================================================
+ * QUICK CUSTOMIZATION GUIDE
+ * ===========================================================================
+ * 
+ * TO CHANGE THEME COLORS:
+ * 1. Go to the :root section below
+ * 2. Modify the CSS variables (--terminal-bg, --text-primary, etc.)
+ * 3. Popular themes:
+ *    - Matrix Green (current): --text-primary: #00ff00
+ *    - Amber: --text-primary: #ffb000
+ *    - Nord: --text-primary: #88c0d0, --terminal-bg: #2e3440
+ *    - Dracula: --text-primary: #bd93f9, --terminal-bg: #282a36
+ *    - Classic White: --text-primary: #000000, --terminal-bg: #ffffff
+ * 
+ * TO CHANGE FONTS:
+ * 1. Update the @import URL with your preferred Google Font
+ * 2. Modify font-family in body and other elements
+ *    - Current: 'Fira Code' (monospace) for terminal
+ *    - Current: 'Inter' (sans-serif) for UI elements
+ * 
+ * TO ADD CUSTOM ANIMATIONS:
+ * 1. Add new @keyframes at the bottom
+ * 2. Apply to elements using animation property
+ * 
+ * FILE STRUCTURE:
+ * This file is organized by sections:
+ * 1. Imports & Variables
+ * 2. Reset & Base Styles
+ * 3. Terminal Layout
+ * 4. Terminal Components
+ * 5. Output Styles
+ * 6. Mobile Components
+ * 7. Animations
+ * 8. Responsive Design
+ * 9. Accessibility
+ * 
+ * ===========================================================================
+ */
+
+/* ===========================================================================
+   1. IMPORTS & FONTS
+   ===========================================================================
+   TIP: Change fonts by replacing the Google Fonts URL below
+   Popular terminal fonts: 'Source Code Pro', 'JetBrains Mono', 'Cascadia Code'
+   For UI elements: 'Inter', 'Roboto', 'Poppins', 'System UI'
+   =========================================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
+/* ===========================================================================
+   2. CSS CUSTOM PROPERTIES (THEME SYSTEM)
+   ===========================================================================
+   TIP: This is where you change the entire look of the terminal
+   
+   COLOR REFERENCE:
+   - --terminal-bg: Main background color
+   - --terminal-header: Top bar background
+   - --terminal-border: Borders and separators
+   - --text-primary: Main terminal text color
+   - --text-secondary: Secondary/darker green
+   - --text-info: Information/links color (blue)
+   - --text-warning: Warning/emphasis color (orange)
+   - --text-error: Error/destructive color (red)
+   - --text-dim: Muted/dimmed text
+   - --text-highlight: Important bright text
+   - --accent: Primary accent color
+   - --overlay-bg: Modal/panel background
+   =========================================================================== */
+
 :root {
+    /* Background Colors */
     --terminal-bg: #0a0a0a;
+    /* Main terminal background */
     --terminal-header: #1a1a1a;
+    /* Top header bar */
     --terminal-border: #2a2a2a;
-    --text-primary: #00ff00;
-    --text-secondary: #00cc00;
-    --text-info: #00ccff;
-    --text-warning: #ffaa00;
-    --text-error: #ff4444;
-    --text-dim: #666666;
-    --text-highlight: #ffffff;
-    --accent: #00ff00;
+    /* Borders and dividers */
     --overlay-bg: rgba(0, 0, 0, 0.8);
+    /* Overlay/modal backdrop */
+
+    /* Text Colors */
+    --text-primary: #00ff00;
+    /* Primary terminal green text */
+    --text-secondary: #00cc00;
+    /* Slightly darker green */
+    --text-info: #00ccff;
+    /* Info/links (cyan/blue) */
+    --text-warning: #ffaa00;
+    /* Warnings/emphasis (amber) */
+    --text-error: #ff4444;
+    /* Error messages (red) */
+    --text-dim: #666666;
+    /* Dimmed/muted text */
+    --text-highlight: #ffffff;
+    /* Bright/highlighted text */
+
+    /* Accent */
+    --accent: #00ff00;
+    /* Primary accent/brand color */
 }
+
+/* ===========================================================================
+   3. CSS RESET & BASE STYLES
+   ===========================================================================
+   TIP: Modify base font sizes here to scale the entire terminal
+   =========================================================================== */
 
 * {
     margin: 0;
@@ -22,16 +127,32 @@
 }
 
 body {
+    /* Typography */
     font-family: 'Fira Code', monospace;
+
+    /* Colors */
     background: var(--terminal-bg);
     color: var(--text-primary);
+
+    /* Layout - Uses dynamic viewport height for mobile browsers */
     height: 100vh;
     height: 100dvh;
+    /* Dynamic viewport height - better for mobile */
     overflow: hidden;
+
+    /* Mobile optimization */
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+/* ===========================================================================
+   4. TERMINAL BACKGROUND EFFECT
+   ===========================================================================
+   TIP: The scanline effect creates a retro CRT monitor look
+   To disable: Comment out .terminal-bg::before or set display: none
+   To adjust intensity: Change the rgba alpha value (currently 0.015)
+   =========================================================================== */
 
 .terminal-bg {
     background: linear-gradient(180deg, #0a0a0a 0%, #0d0d0d 100%);
@@ -55,6 +176,12 @@ body {
     z-index: 10;
 }
 
+/* ===========================================================================
+   5. ACCESSIBILITY
+   ===========================================================================
+   Screen reader only elements - visually hidden but accessible
+   =========================================================================== */
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -67,7 +194,12 @@ body {
     border-width: 0;
 }
 
-/* Terminal Container */
+/* ===========================================================================
+   6. TERMINAL CONTAINER
+   ===========================================================================
+   TIP: Change max-width to make terminal wider or narrower
+   =========================================================================== */
+
 .terminal-container {
     height: 100vh;
     height: 100dvh;
@@ -76,10 +208,16 @@ body {
     position: relative;
     z-index: 1;
     max-width: 1200px;
+    /* Maximum width - change for wider/narrower terminal */
     margin: 0 auto;
 }
 
-/* Terminal Header */
+/* ===========================================================================
+   7. TERMINAL HEADER (TITLE BAR)
+   ===========================================================================
+   TIP: Customize the header appearance
+   =========================================================================== */
+
 .terminal-header {
     background: var(--terminal-header);
     border-bottom: 1px solid var(--terminal-border);
@@ -88,8 +226,10 @@ body {
     align-items: center;
     justify-content: space-between;
     user-select: none;
+    /* Prevents text selection on UI elements */
 }
 
+/* Window control dots (macOS style) */
 .terminal-controls {
     display: flex;
     gap: 8px;
@@ -107,6 +247,7 @@ body {
     opacity: 0.8;
 }
 
+/* Terminal title text */
 .terminal-title {
     display: flex;
     align-items: center;
@@ -124,6 +265,7 @@ body {
     color: #666;
 }
 
+/* Action buttons (minimize, maximize, close) */
 .terminal-actions {
     display: flex;
     gap: 8px;
@@ -146,17 +288,26 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Terminal Output */
+/* ===========================================================================
+   8. TERMINAL OUTPUT AREA
+   ===========================================================================
+   TIP: Adjust font-size and line-height for readability
+   =========================================================================== */
+
 .terminal-output {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
     font-size: 0.85rem;
+    /* Main output text size */
     line-height: 1.6;
+    /* Line spacing */
     scroll-behavior: smooth;
+    /* Smooth scrolling */
 }
 
+/* Custom scrollbar styling */
 .terminal-output::-webkit-scrollbar {
     width: 6px;
 }
@@ -174,7 +325,12 @@ body {
     background: #444;
 }
 
-/* Terminal Input Line */
+/* ===========================================================================
+   9. TERMINAL INPUT AREA
+   ===========================================================================
+   TIP: Customize the prompt appearance here
+   =========================================================================== */
+
 .terminal-input-line {
     display: flex;
     align-items: center;
@@ -185,6 +341,7 @@ body {
     min-height: 60px;
 }
 
+/* Prompt (the text before input cursor) */
 .prompt-container {
     display: flex;
     flex-direction: column;
@@ -221,6 +378,7 @@ body {
     font-weight: 700;
 }
 
+/* Input field wrapper */
 .input-wrapper {
     flex: 1;
     display: flex;
@@ -232,6 +390,7 @@ body {
     margin-left: -8.3em;
 }
 
+/* Actual input field */
 .terminal-input {
     background: transparent;
     border: none;
@@ -241,6 +400,7 @@ body {
     outline: none;
     width: 100%;
     caret-color: var(--text-primary);
+    /* Cursor color */
     padding: 0;
     margin: 0;
     line-height: 1.4;
@@ -255,6 +415,7 @@ body {
     color: transparent;
 }
 
+/* Blinking cursor */
 .cursor {
     display: inline-block;
     width: 8px;
@@ -267,6 +428,7 @@ body {
     align-self: center;
 }
 
+/* Send/Enter button */
 .send-btn {
     background: none;
     border: 1px solid #333;
@@ -276,7 +438,7 @@ body {
     border-radius: 6px;
     transition: all 0.2s ease;
     display: flex;
-    /* Changed from none to flex */
+    /* Shows the button */
     align-items: center;
     justify-content: center;
     font-size: 0.9rem;
@@ -295,7 +457,13 @@ body {
     transform: scale(0.95);
 }
 
-/* Output Styles */
+/* ===========================================================================
+   10. OUTPUT TEXT STYLES
+   ===========================================================================
+   TIP: These classes color different types of output text
+   Usage in JS: addOutput('text', 'success') → adds .output-success class
+   =========================================================================== */
+
 .output-line {
     margin-bottom: 4px;
     word-wrap: break-word;
@@ -327,7 +495,12 @@ body {
     color: #ffffff;
 }
 
-/* Command History */
+/* ===========================================================================
+   11. COMMAND HISTORY DISPLAY
+   ===========================================================================
+   Styles for the echoed command in the output
+   =========================================================================== */
+
 .command-history {
     color: #555;
     font-size: 0.8rem;
@@ -346,7 +519,13 @@ body {
     color: #664400;
 }
 
-/* ASCII Banner */
+/* ===========================================================================
+   12. ASCII BANNER
+   ===========================================================================
+   TIP: Adjust font-size to scale the banner
+   Add text-shadow for glow effect
+   =========================================================================== */
+
 .ascii-banner {
     color: #00ff00;
     white-space: pre;
@@ -356,7 +535,12 @@ body {
     text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
-/* Dividers & Sections */
+/* ===========================================================================
+   13. DIVIDERS & SECTION TITLES
+   ===========================================================================
+   Visual separators used in command outputs
+   =========================================================================== */
+
 .divider {
     color: #00ff00;
     margin: 6px 0;
@@ -371,7 +555,12 @@ body {
     font-size: 0.9rem;
 }
 
-/* Links */
+/* ===========================================================================
+   14. CLICKABLE LINKS
+   ===========================================================================
+   TIP: Style interactive links within terminal output
+   =========================================================================== */
+
 .link {
     color: #00ccff;
     text-decoration: underline;
@@ -384,7 +573,12 @@ body {
     color: #ffffff;
 }
 
-/* Neofetch */
+/* ===========================================================================
+   15. NEOFETCH DISPLAY
+   ===========================================================================
+   System info display layout (like the neofetch command)
+   =========================================================================== */
+
 .neofetch-container {
     display: flex;
     gap: 20px;
@@ -414,7 +608,12 @@ body {
     color: #ffffff;
 }
 
-/* Mobile Menu Toggle */
+/* ===========================================================================
+   16. MOBILE MENU TOGGLE BUTTON
+   ===========================================================================
+   Floating button visible only on mobile devices
+   =========================================================================== */
+
 .mobile-menu-toggle {
     position: fixed;
     top: 16px;
@@ -427,6 +626,7 @@ body {
     height: 40px;
     border-radius: 50%;
     display: none;
+    /* Hidden by default, shown on mobile */
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -440,12 +640,20 @@ body {
     border-color: #00ff00;
 }
 
-/* Quick Commands Panel */
+/* ===========================================================================
+   17. QUICK COMMANDS PANEL (MOBILE)
+   ===========================================================================
+   Slide-in panel for mobile quick commands
+   TIP: Adjust width and colors to match your theme
+   =========================================================================== */
+
 .quick-commands-panel {
     position: fixed;
     top: 0;
     right: -100%;
+    /* Hidden off-screen by default */
     width: 280px;
+    /* Panel width */
     height: 100vh;
     height: 100dvh;
     background: rgba(10, 10, 10, 0.98);
@@ -460,6 +668,7 @@ body {
 
 .quick-commands-panel.active {
     right: 0;
+    /* Slides in from right */
 }
 
 .quick-commands-header {
@@ -528,7 +737,12 @@ body {
     font-size: 0.9rem;
 }
 
-/* Overlay */
+/* ===========================================================================
+   18. OVERLAY (BACKDROP)
+   ===========================================================================
+   Dark overlay behind mobile menu
+   =========================================================================== */
+
 .overlay {
     position: fixed;
     top: 0;
@@ -545,9 +759,15 @@ body {
     display: block;
 }
 
-/* Swipe Hint */
+/* ===========================================================================
+   19. SWIPE HINT (MOBILE)
+   ===========================================================================
+   Shows users they can swipe to access quick commands
+   =========================================================================== */
+
 .swipe-hint {
     display: none;
+    /* Hidden by default, shown on mobile */
     text-align: center;
     padding: 8px;
     color: #444;
@@ -560,7 +780,13 @@ body {
     margin: 0 6px;
 }
 
-/* Animations */
+/* ===========================================================================
+   20. ANIMATIONS
+   ===========================================================================
+   TIP: Customize animation speeds and effects here
+   =========================================================================== */
+
+/* Fade in animation for new output lines */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -573,6 +799,7 @@ body {
     }
 }
 
+/* Pulse animation for swipe hint */
 @keyframes pulse {
 
     0%,
@@ -585,6 +812,7 @@ body {
     }
 }
 
+/* Blinking cursor animation */
 @keyframes blink {
 
     0%,
@@ -598,9 +826,12 @@ body {
 }
 
 /* ===========================================================================
-   RESPONSIVE DESIGN
+   21. RESPONSIVE DESIGN
+   ===========================================================================
+   TIP: Adjust breakpoints and styles for different screen sizes
    =========================================================================== */
 
+/* Tablet Landscape (1024px and below) */
 @media (max-width: 1024px) {
     .terminal-output {
         padding: 16px;
@@ -612,11 +843,15 @@ body {
     }
 }
 
+/* Tablet Portrait / Large Phones (768px and below) */
 @media (max-width: 768px) {
+
+    /* Show mobile menu button */
     .mobile-menu-toggle {
         display: flex;
     }
 
+    /* Compact header */
     .terminal-header {
         padding: 8px 12px;
     }
@@ -633,12 +868,14 @@ body {
         display: none;
     }
 
+    /* Smaller output text */
     .terminal-output {
         padding: 12px;
         font-size: 0.75rem;
         line-height: 1.5;
     }
 
+    /* Compact input area */
     .terminal-input-line {
         padding: 10px 12px;
         gap: 4px;
@@ -665,11 +902,13 @@ body {
         font-size: 0.8rem;
     }
 
+    /* Scale down ASCII art */
     .ascii-banner {
         font-size: 0.4rem;
         line-height: 1.05;
     }
 
+    /* Stack neofetch vertically */
     .neofetch-container {
         flex-direction: column;
         gap: 10px;
@@ -680,14 +919,17 @@ body {
         text-align: center;
     }
 
+    /* Show swipe hint on mobile */
     .swipe-hint {
         display: block;
     }
 
+    /* Hide desktop action buttons */
     .terminal-actions {
         display: none;
     }
 
+    /* Smaller command history */
     .command-history {
         font-size: 0.7rem;
     }
@@ -698,6 +940,7 @@ body {
     }
 }
 
+/* Small Phones (480px and below) */
 @media (max-width: 480px) {
     .terminal-output {
         padding: 10px;
@@ -714,6 +957,7 @@ body {
         line-height: 1.2;
     }
 
+    /* Hide first line of prompt on very small screens */
     .prompt-line1 {
         display: none;
     }
@@ -742,6 +986,7 @@ body {
         font-size: 0.35rem;
     }
 
+    /* Full-width quick commands panel */
     .quick-commands-panel {
         width: 100%;
     }
@@ -755,7 +1000,12 @@ body {
     }
 }
 
-/* Landscape mode for mobile */
+/* ===========================================================================
+   22. LANDSCAPE MODE OPTIMIZATION
+   ===========================================================================
+   For mobile devices in landscape orientation
+   =========================================================================== */
+
 @media (max-height: 500px) and (orientation: landscape) {
     .terminal-header {
         padding: 4px 12px;
@@ -771,6 +1021,7 @@ body {
         min-height: 40px;
     }
 
+    /* Hide banner in landscape to save space */
     .ascii-banner {
         display: none;
     }
@@ -780,7 +1031,12 @@ body {
     }
 }
 
-/* High DPI screens */
+/* ===========================================================================
+   23. HIGH DPI SCREENS (RETINA)
+   ===========================================================================
+   Adjusts scanline effect for high-resolution displays
+   =========================================================================== */
+
 @media (-webkit-min-device-pixel-ratio: 2),
 (min-resolution: 192dpi) {
     .terminal-bg::before {
@@ -793,22 +1049,112 @@ body {
     }
 }
 
-/* Reduced motion preferences */
+/* ===========================================================================
+   24. ACCESSIBILITY - REDUCED MOTION
+   ===========================================================================
+   Respects user preferences for reduced motion
+   =========================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
+
+    /* Disable cursor blink */
     .cursor {
         animation: none;
         opacity: 1;
     }
 
+    /* Disable output fade-in */
     .output-line {
         animation: none;
     }
 
+    /* Disable pulse animation */
     .swipe-hint {
         animation: none;
     }
 
+    /* Disable all transitions */
     * {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ===========================================================================
+   25. PRINT STYLES (OPTIONAL)
+   ===========================================================================
+   TIP: Uncomment and customize if you want print support
+   =========================================================================== */
+
+/*
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .terminal-input-line,
+    .terminal-header,
+    .mobile-menu-toggle,
+    .quick-commands-panel,
+    .overlay {
+        display: none !important;
+    }
+    
+    .terminal-output {
+        overflow: visible;
+        height: auto;
+    }
+}
+*/
+
+/* ===========================================================================
+   26. DARK MODE PREFERENCE (OPTIONAL)
+   ===========================================================================
+   TIP: The terminal is already dark by default, but you can add light mode
+   support by detecting user preferences
+   =========================================================================== */
+
+/*
+@media (prefers-color-scheme: light) {
+    :root {
+        --terminal-bg: #ffffff;
+        --terminal-header: #f5f5f5;
+        --terminal-border: #e0e0e0;
+        --text-primary: #000000;
+        --text-secondary: #333333;
+        --text-info: #0066cc;
+        --text-warning: #cc6600;
+        --text-error: #cc0000;
+        --text-dim: #999999;
+        --text-highlight: #006600;
+        --accent: #00aa00;
+        --overlay-bg: rgba(255, 255, 255, 0.8);
+    }
+}
+*/
+
+/* ===========================================================================
+   END OF STYLESHEET
+   ===========================================================================
+   
+   ADDITIONAL CUSTOMIZATION TIPS:
+   
+   1. To add custom fonts for specific elements:
+      .my-custom-class {
+          font-family: 'Your Font', monospace;
+      }
+   
+   2. To add a gradient border effect:
+      .gradient-border {
+          border-image: linear-gradient(45deg, #00ff00, #00ccff) 1;
+      }
+   
+   3. To add a typing animation for new text:
+      .typing-effect {
+          overflow: hidden;
+          border-right: 2px solid #00ff00;
+          animation: typing 3.5s steps(40, end);
+      }
+   
+   ===========================================================================
+*/
